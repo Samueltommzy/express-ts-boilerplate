@@ -1,0 +1,27 @@
+{
+	"name": "express-ts-project-boilerplate",
+	"version": "1.0.0",
+	"description": "",
+	"main": "dist/app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node dist/app.js",
+		"prepare": "husky"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/express": "^5.0.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.3.0",
+		"typescript": "^5.7.2"
+	},
+	"dependencies": {
+		"express": "^4.21.2"
+	},
+	"lint-staged": {
+		"*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}": ["biome check --apply --no-errors-on-unmatched"]
+	}
+}

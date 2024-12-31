@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"module": "NodeNext",
+		"outDir": "dist",
+		"strict": true,
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"allowJs": true,
+		// "declaration": true,
+		// "declarationDir": "./src/types",
+		// "emitDeclarationOnly": true,
+		"sourceMap": true
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules"]
+}
