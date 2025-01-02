@@ -22,3 +22,5 @@ dist/
 
 # Ignore yarn.lock for Yarn
 yarn.lock
+
+commands.md
