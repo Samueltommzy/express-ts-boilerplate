@@ -1,12 +1,46 @@
-class UserService {
-	// constructor() {
-	// }
-	public async createUser() {
-		console.log("createUser in service");
+import type { IUser } from "../model/User";
+import { UserRepository } from "../repository";
+interface IUserService {
+	createUser: (user: IUser) => Promise<void>;
+	getUser: (userId: string) => Promise<IUser | undefined>;
+	getAllUsers: () => Promise<IUser[] | undefined>;
+	login: () => void;
+}
+
+class UserService implements IUserService {
+	private userRepository: UserRepository;
+	constructor() {
+		this.userRepository = new UserRepository();
 	}
+	public async createUser(user: IUser) {
+		try {
+			await this.userRepository.create(user);
+		} catch (err: any) {
+			throw new Error(err);
+		}
+	}
+
+	public async getUser(userId: string): Promise<IUser | undefined> {
+		try {
+			const user = (await this.userRepository.findById(userId)) as IUser;
+			return user;
+		} catch (err: any) {
+			throw new Error(err);
+		}
+	}
+
+	public async getAllUsers(): Promise<IUser[] | undefined> {
+		try {
+			const users = (await this.userRepository.findAll()) as IUser[];
+			return users;
+		} catch (err: any) {
+			throw new Error(err);
+		}
+	}
+
 	public async login() {
 		console.log("logged in inside service");
 	}
 }
 
-export const userService = new UserService();
+export default UserService;

@@ -1,6 +1,11 @@
 import app from "./app";
+import DatabaseConnection from "./config/Database";
 
 const port: number = 3000;
+async function initDb() {
+	await DatabaseConnection.init();
+}
+initDb();
 const server = app.listen(3000, () => {
 	console.log(`Server is running on http://localhost:${port}`);
 });
