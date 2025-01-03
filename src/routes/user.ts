@@ -8,7 +8,7 @@ const { validateUserSignup, validateUserLogin } = UserRequestValidator;
 
 const router: Router = Router();
 
-router.get("/signup", validateUserSignup, createUser.bind(userController));
-router.get("/login", validateUserLogin, login.bind(userController));
+router.post("/signup", validateUserSignup, createUser.bind(userController));
+router.post("/login", validateUserLogin, login.bind(userController));
 
 export default router;

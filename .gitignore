@@ -23,4 +23,6 @@ dist/
 # Ignore yarn.lock for Yarn
 yarn.lock
 
+
+coverage/
 commands.md
