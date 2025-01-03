@@ -2,10 +2,10 @@
 	"name": "express-ts-project-boilerplate",
 	"version": "1.0.0",
 	"description": "",
-	"main": "dist/app.js",
+	"main": "dist/index.js",
 	"scripts": {
-		"test": "jest",
-		"start": "npm run build && node dist/app.js",
+		"test": "jest --detectOpenHandles",
+		"start": "npm run build && node dist/index.js",
 		"prepare": "husky",
 		"build": "tsc"
 	},
