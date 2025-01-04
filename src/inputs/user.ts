@@ -11,6 +11,8 @@ export const LoginInput = z.object({
 	password: z.string().min(8).max(255),
 });
 
+export type Login = z.infer<typeof LoginInput>;
+
 export const GetUserInput = z.object({
 	id: z.string(),
 });

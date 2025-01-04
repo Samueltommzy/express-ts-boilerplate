@@ -1,3 +1,4 @@
+import TokenValidator from "./TokenValidator";
 import UserRequestValidator from "./UserRequestValidator";
 
-export { UserRequestValidator };
+export { UserRequestValidator, TokenValidator };

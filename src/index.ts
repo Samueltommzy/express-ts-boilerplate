@@ -1,6 +1,8 @@
+import dotenv from "dotenv";
 import app from "./app";
 import DatabaseConnection from "./config/Database";
 
+dotenv.config();
 const port: number = 3000;
 async function initDb() {
 	await DatabaseConnection.init();

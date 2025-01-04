@@ -15,7 +15,6 @@ class UserRepository {
 		}
 	}
 	public async findById(userId: string) {
-		console.log("getUser in repository");
 		try {
 			const user = await User.findById(userId, { password: 0, __v: 0 }).exec();
 			return user;

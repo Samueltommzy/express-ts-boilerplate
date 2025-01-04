@@ -10,7 +10,7 @@ class DatabaseConnection {
 			mongoose.connection.on("reconnected", () => console.log("reconnected"));
 			mongoose.connection.on("disconnecting", () => console.log("disconnecting"));
 			mongoose.connection.on("close", () => console.log("close"));
-			await mongoose.connect(process.env.dbUrl || "mongodb://localhost:27017/dev", {});
+			await mongoose.connect(process.env.DB_URL || "mongodb://localhost:27017/dev", {});
 		} catch (err) {
 			console.log(err);
 		}
@@ -21,7 +21,7 @@ class DatabaseConnection {
 			mongoose.connection.on("connected", () => console.log("Connected to test database"));
 			mongoose.connection.on("open", () => console.log("open"));
 			// mongoose.connection.on("disconnected", () => console.log("disconnected"));
-			await mongoose.connect(process.env.testDbUel || "mongodb://localhost:27017/test", {});
+			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://localhost:27017/test", {});
 		} catch (err) {
 			console.log(err);
 		}

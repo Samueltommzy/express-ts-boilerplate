@@ -29,6 +29,10 @@ class UserController implements IUserController {
 				res.status(404).json({ message: "User not found" });
 				return;
 			}
+			if (req.body._id != user._id) {
+				res.status(403).json({ message: "Cannot access this resource" });
+				return;
+			}
 			res.status(200).json(user);
 		} catch (err) {
 			res.status(500).json({ message: (err as Error).message });
@@ -46,10 +50,10 @@ class UserController implements IUserController {
 
 	public async login(req: Request, res: Response) {
 		try {
-			this.userService.login();
-			res.status(200).json({ message: "User logged in successfully" });
+			const token = await this.userService.login(req.body);
+			res.status(200).json({ message: "User logged in successfully", token });
 		} catch (err) {
-			res.status(500).json({ message: (err as Error).message });
+			res.status(400).json({ message: (err as Error).message });
 		}
 	}
 }

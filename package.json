@@ -14,6 +14,7 @@
 	"license": "ISC",
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
+		"@types/bcrypt": "^5.0.2",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
 		"@types/supertest": "^6.0.2",
@@ -25,7 +26,11 @@
 		"typescript": "^5.7.2"
 	},
 	"dependencies": {
+		"@types/jsonwebtoken": "^9.0.7",
+		"bcrypt": "^5.1.1",
+		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
+		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.9.3",
 		"zod": "^3.24.1"
 	},
