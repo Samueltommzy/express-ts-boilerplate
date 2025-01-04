@@ -11,7 +11,7 @@ class UserRepository {
 			const newUser = new User(user);
 			await newUser.save();
 		} catch (err: any) {
-			throw new Error(err);
+			throw new Error((err as Error).message);
 		}
 	}
 	public async findById(userId: string) {
@@ -19,8 +19,8 @@ class UserRepository {
 		try {
 			const user = await User.findById(userId, { password: 0, __v: 0 }).exec();
 			return user;
-		} catch (err: any) {
-			throw new Error(err);
+		} catch (err) {
+			throw new Error((err as Error).message);
 		}
 	}
 
@@ -28,8 +28,8 @@ class UserRepository {
 		try {
 			const user = await User.findOne({ email }).exec();
 			return user;
-		} catch (err: any) {
-			throw new Error(err);
+		} catch (err) {
+			throw new Error((err as Error).message);
 		}
 	}
 
@@ -38,7 +38,7 @@ class UserRepository {
 			const users = await User.find({}, { password: 0, __v: 0 }).exec();
 			return users;
 		} catch (err) {
-			console.log(err);
+			throw new Error((err as Error).message);
 		}
 	}
 }

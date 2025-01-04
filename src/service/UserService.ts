@@ -15,8 +15,8 @@ class UserService implements IUserService {
 	public async createUser(user: IUser) {
 		try {
 			await this.userRepository.create(user);
-		} catch (err: any) {
-			throw new Error(err);
+		} catch (err) {
+			throw new Error((err as Error).message);
 		}
 	}
 
@@ -24,8 +24,8 @@ class UserService implements IUserService {
 		try {
 			const user = (await this.userRepository.findById(userId)) as IUser;
 			return user;
-		} catch (err: any) {
-			throw new Error(err);
+		} catch (err) {
+			throw new Error((err as Error).message);
 		}
 	}
 
@@ -33,8 +33,8 @@ class UserService implements IUserService {
 		try {
 			const users = (await this.userRepository.findAll()) as IUser[];
 			return users;
-		} catch (err: any) {
-			throw new Error(err);
+		} catch (err) {
+			throw new Error((err as Error).message);
 		}
 	}
 

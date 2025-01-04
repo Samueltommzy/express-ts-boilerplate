@@ -61,11 +61,11 @@ describe("User controller operations", () => {
 		});
 	});
 
-	describe("GET /login", () => {
+	describe("POST /login", () => {
 		test("should log a user in using /user/login endpoint", async () => {
 			// Test implementation for logging in a user
 			const userData = {
-				username: "testuser",
+				email: "samsam@gmail.com",
 				password: "testpassword",
 			};
 			const response = await request(app).post("/user/login").send(userData);

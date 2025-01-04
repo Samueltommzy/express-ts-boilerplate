@@ -26,7 +26,8 @@
 	},
 	"dependencies": {
 		"express": "^4.21.2",
-		"mongoose": "^8.9.3"
+		"mongoose": "^8.9.3",
+		"zod": "^3.24.1"
 	},
 	"lint-staged": {
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}": ["biome check --write --no-errors-on-unmatched"]
