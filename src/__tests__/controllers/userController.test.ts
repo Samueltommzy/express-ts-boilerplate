@@ -62,7 +62,7 @@ describe("User controller operations", () => {
 				.get("/user/6778627d2724c156d2a2a9e8")
 				.set("Authorization", `Bearer ${token}`);
 			expect(response.status).toBe(403);
-			expect(response.body).toHaveProperty("message", "Cannot access this resource");
+			expect(response.body).toHaveProperty("message", "You are not authorized to view this user");
 		});
 	});
 
