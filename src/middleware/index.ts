@@ -1,4 +1,4 @@
+import ErrorHandler from "./ErrorHandler";
 import TokenService from "./TokenService";
 import UserRequestValidator from "./UserRequestValidator";
-
-export { UserRequestValidator, TokenService };
+export { UserRequestValidator, TokenService, ErrorHandler };

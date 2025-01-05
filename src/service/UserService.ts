@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { HttpException, InvalidCredentialException } from "../exceptions";
 import type { Login } from "../inputs/user";
 import { TokenService } from "../middleware";
 import type { IUser } from "../model/User";
@@ -47,15 +48,18 @@ class UserService implements IUserService {
 		try {
 			const user = await this.userRepository.findByEmail(input.email);
 			if (!user) {
-				throw new Error("Invalid email or password, please try again");
+				throw new InvalidCredentialException("Invalid email or password, please try again");
 			}
 			const isValidPassword = bcrypt.compareSync(input.password, user.password);
 			if (!isValidPassword) {
-				throw new Error("Invalid email or password, please try again");
+				throw new InvalidCredentialException("Invalid email or password, please try again");
 			}
 			const token = TokenService.generateToken(user._id);
 			return token;
 		} catch (err) {
+			if (err instanceof InvalidCredentialException) {
+				throw err;
+			}
 			throw new Error((err as Error).message);
 		}
 	}
