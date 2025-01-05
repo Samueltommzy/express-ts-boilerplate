@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { Login } from "../inputs/user";
+import { TokenService } from "../middleware";
 import type { IUser } from "../model/User";
 import { UserRepository } from "../repository";
 interface IUserService {
@@ -52,9 +53,7 @@ class UserService implements IUserService {
 			if (!isValidPassword) {
 				throw new Error("Invalid email or password, please try again");
 			}
-			const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET as string, {
-				expiresIn: "1h",
-			});
+			const token = TokenService.generateToken(user._id);
 			return token;
 		} catch (err) {
 			throw new Error((err as Error).message);

@@ -1,4 +1,4 @@
-import TokenValidator from "./TokenValidator";
+import TokenService from "./TokenService";
 import UserRequestValidator from "./UserRequestValidator";
 
-export { UserRequestValidator, TokenValidator };
+export { UserRequestValidator, TokenService };

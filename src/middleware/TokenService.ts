@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-class TokenValidator {
+class TokenService {
 	private constructor() {}
 	static validateToken = (req: Request, res: Response, next: NextFunction) => {
 		try {
@@ -17,6 +17,13 @@ class TokenValidator {
 			res.status(401).json({ message: `Unauthorized - ${(err as Error).message}` });
 		}
 	};
+
+	static generateToken = (userId: string): string => {
+		const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET as string, {
+			expiresIn: "1h",
+		});
+		return token;
+	};
 }
 
-export default TokenValidator;
+export default TokenService;

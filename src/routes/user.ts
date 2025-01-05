@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { UserController } from "../controller";
 import { CreateUserInput, GetUserInput, LoginInput } from "../inputs/user";
-import { TokenValidator, UserRequestValidator } from "../middleware";
+import { TokenService, UserRequestValidator } from "../middleware";
 
 const userController = new UserController();
 const { createUser, login, getUser, getAllUsers } = userController;
 const { validateUserSignup, validateUserLogin, validateGetUser } = UserRequestValidator;
-const { validateToken } = TokenValidator;
+const { validateToken } = TokenService;
 
 const router: Router = Router();
 
