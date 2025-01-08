@@ -19,7 +19,7 @@ services:
     container_name: mongo_db_community
     image: mongodb/mongodb-community-server
     ports:
-      - 27012:27017
+      - 27017:27017
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://database:27017/dev --quiet
       interval: 10s
