@@ -20,14 +20,11 @@ services:
     image: mongodb/mongodb-community-server
     ports:
       - 27012:27017
-    environment:
-      - MONGODB_INITDB_ROOT_PASSWORD=admin
-      - MONGODB_INITDB_ROOT_USERNAME=admin
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://admin:admin@database:27017/dev --quiet
-      interval: 1m30s
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://database:27017/dev --quiet
+      interval: 15s
       timeout: 30s
       retries: 5
-      start_period: 30s
+      start_period: 15s
     volumes:
       - db_volume:/data/db
