@@ -24,6 +24,8 @@ class DatabaseConnection {
 			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {});
 		} catch (err) {
 			console.log(err);
+		} finally {
+			await DatabaseConnection.close();
 		}
 	}
 
