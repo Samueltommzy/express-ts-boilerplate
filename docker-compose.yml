@@ -1,0 +1,33 @@
+volumes:
+  db_volume:
+services:
+  app:
+    container_name: express-ts-app
+    build:
+      context: .
+    ports:
+    - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - DB_URL=${DB_URL}
+      - TEST_DB_URL=${TEST_DB_URL}
+    restart: always
+  database:
+    container_name: mongo_db_community
+    image: mongodb/mongodb-community-server
+    ports:
+      - 27012:27017
+    environment:
+      - MONGODB_INITDB_ROOT_PASSWORD=admin
+      - MONGODB_INITDB_ROOT_USERNAME=admin
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://admin:admin@database:27017/dev --quiet
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - db_volume:/data/db
