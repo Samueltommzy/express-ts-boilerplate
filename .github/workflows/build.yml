@@ -41,7 +41,7 @@ jobs:
               run: |
                 retries=5
                 count=0
-                until docker exec database mongosh mongodb://database:27017/dev --quiet|| [ $count -ge $retries ]; do
+                until docker exec mongo_db_community mongosh mongodb://database:27017/dev --quiet|| [ $count -ge $retries ]; do
                   echo "Waiting for test_db to be ready...Attempt $((count + 1))/$retries"
                   sleep 5
                   count=$((count + 1))
