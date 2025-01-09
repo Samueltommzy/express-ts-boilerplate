@@ -7,6 +7,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", routes);
+app.use("/health", (req, res, next) => {
+	res.status(200).send("App is ready");
+});
 app.use(ErrorHandler);
 
 export default app;

@@ -34,30 +34,29 @@ jobs:
             - name: Set environment variables
               run: |
                 echo "JWT_SECRET=testSecret" >> .env
-                echo "DB_URL=mongodb://0.0.0.0:27017/dev" >> .env
-                echo "TEST_DB_URL=mongodb://127.0.0.1:27017/test?directConnection=true" >> .env
-            # - name: Build and start app
-            #   run: docker-compose --env-file .env -f docker-compose.yml up -d
-            # - name: Wait for test database to be ready
-            #   run: |
-            #     retries=5
-            #     count=0
-            #     until docker exec mongo_db_community mongosh mongodb://database:27017/dev --quiet|| [ $count -ge $retries ]; do
-            #       echo "Waiting for test_db to be ready...Attempt $((count + 1))/$retries"
-            #       sleep 5
-            #       count=$((count + 1))
-            #     done
-            #     if [ $count -ge $retries ]; then
-            #       echo "The test db did not start in time, exiting..."
-            #       exit 1
-            #     echo "Connection test successful"
-            #     fi
-            - name: Start mongodb service
-              uses: supercharge/mongodb-github-action@1.12.0
-              with:
-                mongodb-container-name: mongo_db_community_v2
-                mongodb-image: mongodb/mongodb-community-server
-            - name: Run Test
-              run: npm run test
+                echo "DB_URL=mongodb://database:27017/dev" >> .env
+                echo "TEST_DB_URL=mongodb://database:27017/test?directConnection=true" >> .env
+            - name: Build and start app
+              run: docker-compose --env-file .env -f docker-compose.yml up -d --build
+            - name: Wait for test database to be ready
+              run: |
+                retries=5
+                count=0
+                until docker exec mongo_db_community mongosh mongodb://database:27017/test --quiet|| [ $count -ge $retries ]; do
+                  echo "Waiting for test_db to be ready...Attempt $((count + 1))/$retries"
+                  sleep 5
+                  count=$((count + 1))
+                done
+                if [ $count -ge $retries ]; then
+                  echo "The test db did not start in time, exiting..."
+                  exit 1
+                echo "Connection test successful"
+                fi
+            - name: Check that app is ready
+              run: docker exec express-ts-app sh -c 'curl -s http://localhost:3000/health; do sleep 1; done'
+            - name: Install dependencies
+              run: docker express-ts-app npm ci
+            - name: Run Tests
+              run: docker exec express-ts-app npm run test
             - name: Tear down services
               run: docker-compose down
