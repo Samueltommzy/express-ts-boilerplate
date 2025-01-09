@@ -40,7 +40,7 @@ jobs:
               run: |
                 retries=5
                 count=0
-                until docker exec mongo_db_community mongosh mongodb://database:27017/test --quiet|| [ $count -ge $retries ]; do
+                until docker exec mongo_db_community mongo --eval "db.runCommand({ ping: 1 })" || [ $count -ge $retries ]; do
                   echo "Waiting for test_db to be ready...Attempt $((count + 1))/$retries"
                   sleep 5
                   count=$((count + 1))
@@ -50,6 +50,7 @@ jobs:
                   exit 1
                 echo "Connection test successful"
                 fi
+
             # - name: Check that app is ready
             #   run: docker exec express-ts-app sh -c 'until curl -s http://localhost:3000/health; do sleep 1; done'
             - name: Install dependencies
