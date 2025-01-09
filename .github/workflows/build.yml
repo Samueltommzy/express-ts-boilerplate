@@ -55,7 +55,7 @@ jobs:
             # - name: Install dependencies
             #   run: docker exec express-ts-app npm ci
             - name: Ping db from app
-              run : docker exec -it express-ts-app sh -c 'ping database'
+              run : docker exec express-ts-app sh -c 'ping -c 3 database'
             - name: Run Tests
               run: docker exec express-ts-app npm run test
             - name: Tear down services
