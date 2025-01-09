@@ -9,15 +9,6 @@ beforeAll(async () => {
 	try {
 		console.log("Running this before all");
 		await DatabaseConnection.initTestDb();
-		const userData = {
-			_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
-			firstName: "Sam",
-			lastName: "testuser2",
-			password: "testpassword",
-			email: "sam2@gmail.com",
-		};
-		const user = new User(userData);
-		await user.save();
 	} catch (error) {
 		console.log({ err: error });
 	}
@@ -28,8 +19,17 @@ afterAll(async () => {
 	console.log("Running this after all");
 	await DatabaseConnection.dropDatabase();
 	await DatabaseConnection.close();
-});
-describe("User controller operations", () => {
+}, 30000);
+describe("User controller operations", async () => {
+	const userData = {
+		_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
+		firstName: "Sam",
+		lastName: "testuser2",
+		password: "testpassword",
+		email: "sam2@gmail.com",
+	};
+	const user = new User(userData);
+	await user.save();
 	const token = jwt.sign({ _id: "6778627d2724c156d2a2a9e7" }, process.env.JWT_SECRET as string);
 	describe("POST /user/signup", () => {
 		test("should sign up a user using /user/signup endpoint", async () => {
