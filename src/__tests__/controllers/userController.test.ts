@@ -46,6 +46,7 @@ describe("User controller operations", () => {
 				email: "samsam@gmail.com",
 			};
 			const response = await request(app).post("/user/signup").send(userData);
+			console.log({ res: response.body });
 			expect(response.status).toBe(200);
 			const documentCount = await User.countDocuments({}).exec();
 			expect(documentCount).toBe(1);
@@ -58,6 +59,7 @@ describe("User controller operations", () => {
 			const response = await request(app)
 				.get("/user/6778627d2724c156d2a2a9e7")
 				.set("Authorization", `Bearer ${token}`);
+			console.log({ res: response.body });
 			expect(response.status).toBe(200);
 			expect(response.body).toHaveProperty("firstName", "Sam");
 			expect(response.body).toHaveProperty("lastName", "testuser");
