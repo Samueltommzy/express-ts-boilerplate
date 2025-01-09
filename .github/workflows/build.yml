@@ -18,6 +18,9 @@ jobs:
               run: biome ci .
     test:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                mongo_version: ['6.0','7.0','8.0']
         steps:
             - name: checkout repository
               uses: actions/checkout@v4
@@ -34,7 +37,7 @@ jobs:
               run: |
                 echo "JWT_SECRET=testSecret" >> .env
                 echo "DB_URL=mongodb://database:27017/dev" >> .env
-                echo "TEST_DB_URL=mongodb://database:27017/test" >> .env
+                echo "TEST_DB_URL=mongodb://localhost:27017/test" >> .env
             - name: Build and start app
               run: docker-compose --env-file .env -f docker-compose.yml up -d
             - name: Wait for test database to be ready
@@ -51,6 +54,12 @@ jobs:
                   exit 1
                 echo "Connection test successful"
                 fi
+            - name: Start mongodb service
+              uses: supercharge/mongodb-github-action@1.12.0
+              with:
+                mongodb-version: ${{matrix.mongo_version}}
+                mongodb-container-name: mongo_db_community
+                mongodb-image: mongodb/mongodb-community-server
             - name: Run Test
               run: npm run test
             - name: Tear down services
