@@ -37,7 +37,19 @@ jobs:
             - name: Build and start app
               run: docker-compose --env-file .env -f docker-compose.yml up -d --build
             - name: Wait for test database to be ready
-              run: docker exec express-ts-app npm run mongo-connect
+              run: |
+                retries=5
+                count=0
+                until docker exec mongo_db_community sh -c 'mongosh --eval "db.runCommand({ ping: 1 })"' || [ $count -ge $retries ]; do
+                  echo "Waiting for test_db to be ready...Attempt $((count + 1))/$retries"
+                  sleep 5
+                  count=$((count + 1))
+                done
+                if [ $count -ge $retries ]; then
+                  echo "The test db did not start in time, exiting..."
+                  exit 1
+                fi
+                echo "Connection test successful"
             # - name: Check that app is ready
             #   run: docker exec express-ts-app sh -c 'until curl -s http://localhost:3000/health; do sleep 1; done'
             # - name: Install dependencies
