@@ -55,7 +55,7 @@ jobs:
             - name: Start mongodb service
               uses: supercharge/mongodb-github-action@1.12.0
               with:
-                mongodb-container-name: mongo_db_community
+                mongodb-container-name: mongo_db_community_v2
                 mongodb-image: mongodb/mongodb-community-server
             - name: Run Test
               run: npm run test
