@@ -22,7 +22,7 @@ afterAll(async () => {
 	// Database teardown
 	DatabaseConnection.dropDatabase();
 	DatabaseConnection.close();
-}, 15);
+});
 describe("User controller operations", () => {
 	const token = jwt.sign({ _id: "6778627d2724c156d2a2a9e7" }, process.env.JWT_SECRET as string);
 	describe("POST /user/signup", () => {

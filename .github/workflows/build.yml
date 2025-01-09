@@ -49,6 +49,7 @@ jobs:
                 if [ $count -ge $retries ]; then
                   echo "The test db did not start in time, exiting..."
                   exit 1
+                echo "Connection test successful"
                 fi
             - name: Run Test
               run: npm run test

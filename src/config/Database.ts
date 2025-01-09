@@ -21,6 +21,7 @@ class DatabaseConnection {
 			mongoose.connection.on("connected", () => console.log("Connected to test database"));
 			mongoose.connection.on("open", () => console.log("open"));
 			// mongoose.connection.on("disconnected", () => console.log("disconnected"));
+			console.log({ env: process.env.TEST_DB_URL });
 			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {});
 		} catch (err) {
 			console.log(err);
