@@ -18,13 +18,13 @@ class DatabaseConnection {
 
 	public static async initTestDb() {
 		try {
-			mongoose.connection.on("connected", () => console.log("Connected to test database"));
-			mongoose.connection.on("open", () => console.log("open"));
+			// mongoose.connection.on("connected", () => console.log("Connected to test database"));
+			// mongoose.connection.on("open", () => console.log("open"));
 			// mongoose.connection.on("disconnected", () => console.log("disconnected"));
-			console.log({ env: process.env.TEST_DB_URL });
+			// console.log({ env: process.env.TEST_DB_URL });
 			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {});
 		} catch (err) {
-			console.log(err);
+			// console.log(err);
 		} finally {
 			await DatabaseConnection.close();
 		}
@@ -34,7 +34,7 @@ class DatabaseConnection {
 		try {
 			await mongoose.connection.dropDatabase();
 		} catch (err) {
-			console.log(err);
+			// console.log(err);
 		}
 	}
 	public static async close() {
