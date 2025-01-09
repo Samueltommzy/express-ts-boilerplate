@@ -21,13 +21,13 @@ beforeAll(async () => {
 	} catch (error) {
 		console.log({ err: error });
 	}
-}, 30);
+}, 30000);
 
 afterAll(async () => {
 	// Database teardown
 	console.log("Running this after all");
-	DatabaseConnection.dropDatabase();
-	DatabaseConnection.close();
+	await DatabaseConnection.dropDatabase();
+	await DatabaseConnection.close();
 });
 describe("User controller operations", () => {
 	const token = jwt.sign({ _id: "6778627d2724c156d2a2a9e7" }, process.env.JWT_SECRET as string);
