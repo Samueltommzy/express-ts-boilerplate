@@ -23,7 +23,8 @@ class DatabaseConnection {
 			// mongoose.connection.on("disconnected", () => console.log("disconnected"));
 			console.log({ env: process.env.TEST_DB_URL });
 			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {
-				serverSelectionTimeoutMS: 150000,
+				serverSelectionTimeoutMS: 30000,
+				socketTimeoutMS: 30000,
 			});
 		} catch (err) {
 			console.log(err);

@@ -16,7 +16,7 @@ beforeAll(async () => {
 	};
 	const user = new User(userData);
 	await user.save();
-}, 15);
+}, 30);
 
 afterAll(async () => {
 	// Database teardown

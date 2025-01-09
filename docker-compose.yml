@@ -26,5 +26,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    environment:
+      - MONGODB_INITDB_BIND_IP=0.0.0.0
     volumes:
       - db_volume:/data/db
