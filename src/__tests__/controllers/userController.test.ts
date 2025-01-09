@@ -9,6 +9,15 @@ beforeAll(async () => {
 	try {
 		console.log("Running this before all");
 		await DatabaseConnection.initTestDb();
+		// const userData = {
+		// 	_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
+		// 	firstName: "Sam",
+		// 	lastName: "testuser2",
+		// 	password: "testpassword",
+		// 	email: "sam2@gmail.com",
+		// };
+		// const user = new User(userData);
+		// await user.save();
 	} catch (error) {
 		console.log({ err: error });
 	}
@@ -20,17 +29,12 @@ afterAll(async () => {
 	await DatabaseConnection.dropDatabase();
 	await DatabaseConnection.close();
 }, 30000);
-describe("User controller operations", async () => {
-	const userData = {
-		_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
-		firstName: "Sam",
-		lastName: "testuser2",
-		password: "testpassword",
-		email: "sam2@gmail.com",
-	};
-	const user = new User(userData);
-	await user.save();
+describe("User controller operations", () => {
 	const token = jwt.sign({ _id: "6778627d2724c156d2a2a9e7" }, process.env.JWT_SECRET as string);
+	const invalidToken = jwt.sign(
+		{ _id: "6778627d2724c156d2a2a9e8" },
+		process.env.JWT_SECRET as string,
+	);
 	describe("POST /user/signup", () => {
 		test("should sign up a user using /user/signup endpoint", async () => {
 			// Test implementation for signing up a user
@@ -44,7 +48,7 @@ describe("User controller operations", async () => {
 			const response = await request(app).post("/user/signup").send(userData);
 			expect(response.status).toBe(200);
 			const documentCount = await User.countDocuments({}).exec();
-			expect(documentCount).toBe(2);
+			expect(documentCount).toBe(1);
 		});
 	});
 
@@ -65,8 +69,8 @@ describe("User controller operations", async () => {
 		test("should deny access to retrieving a user using invalid token", async () => {
 			// Test implementation for getting a user
 			const response = await request(app)
-				.get("/user/6778627d2724c156d2a2a9e8")
-				.set("Authorization", `Bearer ${token}`);
+				.get("/user/6778627d2724c156d2a2a9e7")
+				.set("Authorization", `Bearer ${invalidToken}`);
 			expect(response.status).toBe(403);
 			expect(response.body).toHaveProperty("message", "You are not authorized to view this user");
 		});
