@@ -33,7 +33,7 @@ jobs:
               run: |
                 echo "JWT_SECRET=testSecret" >> .env
                 echo "DB_URL=mongodb://database:27017/dev" >> .env
-                echo "TEST_DB_URL=mongodb://database:27017/test?directConnection=true" >> .env
+                echo "TEST_DB_URL=mongodb://database:27017/test" >> .env
             - name: Build and start app
               run: docker-compose --env-file .env -f docker-compose.yml up -d --build
             - name: Wait for test database to be ready
