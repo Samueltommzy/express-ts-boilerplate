@@ -22,12 +22,14 @@ class DatabaseConnection {
 			// mongoose.connection.on("open", () => console.log("open"));
 			// mongoose.connection.on("disconnected", () => console.log("disconnected"));
 			console.log({ env: process.env.TEST_DB_URL });
-			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {
-				serverSelectionTimeoutMS: 30000,
-				socketTimeoutMS: 30000,
-			});
-		} catch (err) {
-			console.log(err);
+			await mongoose
+				.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {
+					serverSelectionTimeoutMS: 30000,
+					socketTimeoutMS: 30000,
+				})
+				.then(() => console.log("connected to database"));
+		} catch (err: any) {
+			throw new Error(err);
 		} finally {
 			await DatabaseConnection.close();
 		}

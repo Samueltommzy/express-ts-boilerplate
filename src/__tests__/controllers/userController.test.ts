@@ -6,20 +6,26 @@ import DatabaseConnection from "../../config/Database";
 import { User } from "../../model";
 beforeAll(async () => {
 	// Database setup
-	await DatabaseConnection.initTestDb();
-	const userData = {
-		_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
-		firstName: "Sam",
-		lastName: "testuser2",
-		password: "testpassword",
-		email: "sam2@gmail.com",
-	};
-	const user = new User(userData);
-	await user.save();
+	try {
+		console.log("Running this before all");
+		await DatabaseConnection.initTestDb();
+		const userData = {
+			_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
+			firstName: "Sam",
+			lastName: "testuser2",
+			password: "testpassword",
+			email: "sam2@gmail.com",
+		};
+		const user = new User(userData);
+		await user.save();
+	} catch (error) {
+		console.log({ err: error });
+	}
 }, 30);
 
 afterAll(async () => {
 	// Database teardown
+	console.log("Running this after all");
 	DatabaseConnection.dropDatabase();
 	DatabaseConnection.close();
 });

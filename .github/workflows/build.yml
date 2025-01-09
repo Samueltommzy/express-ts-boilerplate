@@ -54,6 +54,8 @@ jobs:
             #   run: docker exec express-ts-app sh -c 'until curl -s http://localhost:3000/health; do sleep 1; done'
             # - name: Install dependencies
             #   run: docker exec express-ts-app npm ci
+            - name: Ping db from app
+              run : docker exec -it express-ts-app sh -c 'ping database'
             - name: Run Tests
               run: docker exec express-ts-app npm run test
             - name: Tear down services
