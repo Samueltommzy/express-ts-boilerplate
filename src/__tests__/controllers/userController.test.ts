@@ -6,7 +6,7 @@ import DatabaseConnection from "../../config/Database";
 import { User } from "../../model";
 beforeAll(async () => {
 	// Database setup
-	DatabaseConnection.initTestDb();
+	await DatabaseConnection.initTestDb();
 	const userData = {
 		_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
 		firstName: "Sam",

@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "jest --detectOpenHandles",
 		"start": "npm run build && node dist/index.js",
+		"mongo-connect": "sh ./mongo-connect.sh",
 		"prepare": "husky",
 		"build": "tsc"
 	},
