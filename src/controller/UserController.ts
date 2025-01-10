@@ -57,7 +57,7 @@ class UserController implements IUserController {
 	public async login(req: Request, res: Response, next: NextFunction) {
 		try {
 			const token = await this.userService.login(req.body);
-			ResponseHandler.sendResponse(res, 200, "User logged in successfully", token);
+			ResponseHandler.sendResponse(res, 200, "User logged in successfully", { token });
 		} catch (err) {
 			next(err);
 		}
