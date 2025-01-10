@@ -34,7 +34,7 @@ describe("User controller operations", () => {
 				email: "samsam@gmail.com",
 			};
 			const response = await request(app).post("/user/signup").send(userData);
-			expect(response.status).toBe(200);
+			expect(response.status).toBe(201);
 			const documentCount = await User.countDocuments({}).exec();
 			expect(documentCount).toBe(1);
 		});
@@ -47,9 +47,10 @@ describe("User controller operations", () => {
 				.get("/user/6778627d2724c156d2a2a9e7")
 				.set("Authorization", `Bearer ${token}`);
 			expect(response.status).toBe(200);
-			expect(response.body).toHaveProperty("firstName", "Sam");
-			expect(response.body).toHaveProperty("lastName", "testuser");
-			expect(response.body).toHaveProperty("email", "samsam@gmail.com");
+			expect(response.body).toHaveProperty("data");
+			expect(response.body.data).toHaveProperty("firstName", "Sam");
+			expect(response.body.data).toHaveProperty("lastName", "testuser");
+			expect(response.body.data).toHaveProperty("email", "samsam@gmail.com");
 		});
 	});
 
@@ -89,8 +90,9 @@ describe("User controller operations", () => {
 			// Test implementation for getting a user
 			const response = await request(app).get("/user/").set("Authorization", `Bearer ${token}`);
 			expect(response.status).toBe(200);
-			expect(response.body).toBeInstanceOf(Array);
-			expect(response.body).toHaveLength(1);
+			expect(response.body).toHaveProperty("data");
+			expect(response.body.data).toBeInstanceOf(Array);
+			expect(response.body.data).toHaveLength(1);
 		});
 	});
 
@@ -112,7 +114,8 @@ describe("User controller operations", () => {
 			const response = await request(app).post("/user/login").send(userData);
 			expect(response.status).toBe(200);
 			expect(response.body).toHaveProperty("message", "User logged in successfully");
-			expect(response.body).toHaveProperty("token");
+			expect(response.body).toHaveProperty("data");
+			expect(response.body.data).toHaveProperty("token");
 		});
 	});
 });

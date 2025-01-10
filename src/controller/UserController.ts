@@ -7,6 +7,7 @@ import {
 } from "../exceptions";
 import type { IUser } from "../model";
 import { UserService } from "../service";
+import { ResponseHandler } from "../utils";
 interface IUserController {
 	// userService: UserService;
 	createUser: (req: Request, res: Response, next: NextFunction) => void;
@@ -23,8 +24,7 @@ class UserController implements IUserController {
 		try {
 			await this.userService.createUser(req.body);
 			// send notification email - publish to message broker
-
-			res.status(200).json({ message: "User signed up successfully" });
+			ResponseHandler.sendResponse(res, 201, "User signed up successfully");
 		} catch (err) {
 			next(err);
 		}
@@ -39,7 +39,7 @@ class UserController implements IUserController {
 			if (req.body._id != user._id) {
 				throw new UnAuthorizedException("You are not authorized to view this user");
 			}
-			res.status(200).json(user);
+			ResponseHandler.sendResponse(res, 200, "User fetched", user);
 		} catch (err) {
 			next(err);
 		}
@@ -48,7 +48,7 @@ class UserController implements IUserController {
 	public async getAllUsers(req: Request, res: Response, next: NextFunction) {
 		try {
 			const users = (await this.userService.getAllUsers()) as IUser[];
-			res.status(200).json(users);
+			ResponseHandler.sendResponse(res, 200, undefined, users);
 		} catch (err) {
 			next(err);
 		}
@@ -57,7 +57,7 @@ class UserController implements IUserController {
 	public async login(req: Request, res: Response, next: NextFunction) {
 		try {
 			const token = await this.userService.login(req.body);
-			res.status(200).json({ message: "User logged in successfully", token });
+			ResponseHandler.sendResponse(res, 200, "User logged in successfully", token);
 		} catch (err) {
 			next(err);
 		}
