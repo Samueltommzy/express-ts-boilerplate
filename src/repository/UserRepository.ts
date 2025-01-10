@@ -6,7 +6,6 @@ class UserRepository {
 	 * @param user
 	 */
 	public async create(user: IUser): Promise<void> {
-		console.log("createUser in repository");
 		try {
 			const newUser = new User(user);
 			await newUser.save();

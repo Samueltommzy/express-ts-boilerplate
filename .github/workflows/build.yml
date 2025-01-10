@@ -50,10 +50,6 @@ jobs:
                   exit 1
                 fi
                 echo "Connection test successful"
-            # - name: Check that app is ready
-            #   run: docker exec express-ts-app sh -c 'until curl -s http://localhost:3000/health; do sleep 1; done'
-            # - name: Install dependencies
-            #   run: docker exec express-ts-app npm ci
             - name: Run Tests
               run: docker exec express-ts-app npm run test
             - name: Tear down services
