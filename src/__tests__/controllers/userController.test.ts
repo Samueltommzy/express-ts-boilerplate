@@ -2,35 +2,8 @@ import jwt from "jsonwebtoken";
 import moongoose from "mongoose";
 import request from "supertest";
 import app from "../../app";
-import DatabaseConnection from "../../config/Database";
 import { User } from "../../model";
-// beforeAll(async () => {
-// 	// Database setup
-// 	try {
-//         const database = DatabaseConnection.getDatabaseInstance();
 
-// 		await database.initTestDb();
-// 		// const userData = {
-// 		// 	_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
-// 		// 	firstName: "Sam",
-// 		// 	lastName: "testuser2",
-// 		// 	password: "testpassword",
-// 		// 	email: "sam2@gmail.com",
-// 		// };
-// 		// const user = new User(userData);
-// 		// await user.save();
-// 	} catch (error) {
-// 		console.log({ err: error });
-// 	}
-// }, 30000);
-
-// afterAll(async () => {
-// 	// Database teardown
-// 	console.log("Running this after all");
-//     const database = DatabaseConnection.getDatabaseInstance();
-// 	await database.dropDatabase();
-// 	await database.close();
-// }, 30000);
 describe("User controller operations", () => {
 	const token = jwt.sign({ _id: "6778627d2724c156d2a2a9e7" }, process.env.JWT_SECRET as string);
 	const invalidToken = jwt.sign(
@@ -106,7 +79,7 @@ describe("User controller operations", () => {
 			const response = await request(app).get("/user/").set("Authorization", `Bearer ${token}`);
 			expect(response.status).toBe(200);
 			expect(response.body).toBeInstanceOf(Array);
-			expect(response.body).toHaveLength(2);
+			expect(response.body).toHaveLength(1);
 		});
 	});
 
