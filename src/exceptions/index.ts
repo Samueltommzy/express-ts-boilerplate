@@ -4,6 +4,7 @@ import InvalidCredentialException from "./InvalidCredentialException";
 import ResourceNotFoundException from "./ResourceNotFoundException";
 import UnAuthenticatedException from "./UnAuthenticatedException";
 import UnAuthorizedException from "./UnAuthorizedException";
+import UniqueEmailViolationException from "./UniqueEmailViolatioin";
 export {
 	BadRequestException,
 	ResourceNotFoundException,
@@ -11,4 +12,5 @@ export {
 	UnAuthenticatedException,
 	HttpException,
 	InvalidCredentialException,
+	UniqueEmailViolationException,
 };

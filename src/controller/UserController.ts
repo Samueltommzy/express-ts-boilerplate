@@ -21,7 +21,8 @@ class UserController implements IUserController {
 	}
 	public async createUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			await this.userService.createUser(req.body);
+			// await this.userService.createUser(req.body);
+			this.userService.addUser(req.body);
 			// send notification email - publish to message broker
 
 			res.status(200).json({ message: "User signed up successfully" });
@@ -32,8 +33,9 @@ class UserController implements IUserController {
 
 	public async getUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			const user = (await this.userService.getUser(req.params.id)) as IUser;
-			if (user == null) {
+			// const user = (await this.userService.getUser(req.params.id)) as IUser;
+			const user = this.userService.findUser(req.params.id);
+			if (!user) {
 				throw new ResourceNotFoundException("User not found");
 			}
 			if (req.body._id != user._id) {
@@ -47,7 +49,13 @@ class UserController implements IUserController {
 
 	public async getAllUsers(req: Request, res: Response, next: NextFunction) {
 		try {
-			const users = (await this.userService.getAllUsers()) as IUser[];
+			// const users = (await this.userService.getAllUsers()) as IUser[];
+			const usersMap = this.userService.findAllUsers();
+			const users: IUser[] = [];
+			for (const IUser of usersMap.values()) {
+				users.push(IUser);
+			}
+			console.log({ users });
 			res.status(200).json(users);
 		} catch (err) {
 			next(err);
