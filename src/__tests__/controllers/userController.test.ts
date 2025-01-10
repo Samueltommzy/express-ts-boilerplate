@@ -4,6 +4,19 @@ import request from "supertest";
 import app from "../../app";
 import { User } from "../../model";
 
+import DatabaseConnection from "../../config/Database";
+
+const database = DatabaseConnection.getDatabaseInstance();
+
+beforeAll(async () => {
+	await database.initTestDb();
+}, 30000);
+
+afterAll(async () => {
+	await database.dropDatabase();
+	await database.close();
+}, 30000);
+
 describe("User controller operations", () => {
 	const token = jwt.sign({ _id: "6778627d2724c156d2a2a9e7" }, process.env.JWT_SECRET as string);
 	const invalidToken = jwt.sign(

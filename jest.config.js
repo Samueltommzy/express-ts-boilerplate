@@ -10,5 +10,5 @@ module.exports = {
 	coverageDirectory: "coverage",
 	collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts"],
 	testPathIgnorePatterns: ["dist"],
-	setupFilesAfterEnv: ["dotenv/config", "<rootDir>/src/__tests__/setup.ts"],
+	setupFilesAfterEnv: ["dotenv/config"],
 };
