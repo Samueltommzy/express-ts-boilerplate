@@ -2,7 +2,19 @@ import mongoose from "mongoose";
 
 class DatabaseConnection {
 	private constructor() {}
-	public static async init() {
+	private isConnected = false;
+	private static instance: DatabaseConnection;
+
+	public static getDatabaseInstance(): DatabaseConnection {
+		if (!DatabaseConnection.instance) {
+			DatabaseConnection.instance = new DatabaseConnection();
+		}
+		return DatabaseConnection.instance;
+	}
+	public async init() {
+		if (this.isConnected) {
+			return;
+		}
 		try {
 			mongoose.connection.on("connected", () => console.log("Connected to database"));
 			mongoose.connection.on("open", () => console.log("open"));
@@ -16,28 +28,35 @@ class DatabaseConnection {
 		}
 	}
 
-	public static async initTestDb() {
+	public async initTestDb() {
+		if (this.isConnected) {
+			return;
+		}
 		try {
-			mongoose.connection.on("connected", () => console.log("Connected to test database"));
-			mongoose.connection.on("open", () => console.log("open"));
-			// mongoose.connection.on("disconnected", () => console.log("disconnected"));
-			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {});
-		} catch (err) {
-			console.log(err);
-		} finally {
-			await DatabaseConnection.close();
+			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {
+				serverSelectionTimeoutMS: 30000,
+				socketTimeoutMS: 30000,
+			});
+			this.isConnected = true;
+		} catch (err: any) {
+			throw new Error(err);
 		}
 	}
 
-	public static async dropDatabase() {
+	public async dropDatabase() {
 		try {
-			await mongoose.connection.dropDatabase();
+			if (this.isConnected) {
+				await mongoose.connection.dropDatabase();
+			}
 		} catch (err) {
-			console.log(err);
+			// console.log(err);
 		}
 	}
-	public static async close() {
-		await mongoose.connection.close();
+	public async close() {
+		if (this.isConnected) {
+			await mongoose.disconnect();
+			this.isConnected = false;
+		}
 	}
 }
 

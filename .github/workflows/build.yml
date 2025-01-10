@@ -1,7 +1,7 @@
 name: Build Project
 on:
     push:
-        branches: ["dev", "master"]
+        branches: ["diagnosis", "dev", "master"]
     pull_request:
         branches: ["master"]
 jobs:
@@ -18,6 +18,7 @@ jobs:
               run: biome ci .
     test:
         runs-on: ubuntu-latest
+    
         steps:
             - name: checkout repository
               uses: actions/checkout@v4
@@ -26,8 +27,6 @@ jobs:
               with:
                 node-version-file: '.nvmrc'
                 cache: "npm"
-            - name: Clean Install Dependencies
-              run: npm ci
             - name: Setup docker compose
               run : sudo apt-get install -y docker-compose
             - name: Set environment variables
@@ -36,12 +35,12 @@ jobs:
                 echo "DB_URL=mongodb://database:27017/dev" >> .env
                 echo "TEST_DB_URL=mongodb://database:27017/test" >> .env
             - name: Build and start app
-              run: docker-compose --env-file .env -f docker-compose.yml up -d
+              run: docker-compose --env-file .env -f docker-compose.yml up -d --build
             - name: Wait for test database to be ready
               run: |
                 retries=5
                 count=0
-                until docker exec mongo_db_community mongosh mongodb://database:27017/dev --quiet|| [ $count -ge $retries ]; do
+                until docker exec mongo_db_community sh -c 'mongosh --eval "db.runCommand({ ping: 1 })"' || [ $count -ge $retries ]; do
                   echo "Waiting for test_db to be ready...Attempt $((count + 1))/$retries"
                   sleep 5
                   count=$((count + 1))
@@ -50,7 +49,8 @@ jobs:
                   echo "The test db did not start in time, exiting..."
                   exit 1
                 fi
-            - name: Run Test
-              run: npm run test
+                echo "Connection test successful"
+            - name: Run Tests
+              run: docker exec express-ts-app npm run test
             - name: Tear down services
               run: docker-compose down

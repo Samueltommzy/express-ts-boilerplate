@@ -5,7 +5,8 @@ import DatabaseConnection from "./config/Database";
 dotenv.config();
 const port: number = 3000;
 async function initDb() {
-	await DatabaseConnection.init();
+	const database = DatabaseConnection.getDatabaseInstance();
+	await database.init();
 }
 initDb();
 const server = app.listen(port, () => {
