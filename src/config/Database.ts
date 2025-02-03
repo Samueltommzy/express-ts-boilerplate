@@ -4,6 +4,14 @@ class DatabaseConnection {
 	private constructor() {}
 	private isConnected = false;
 	private static instance: DatabaseConnection;
+	private DB_PASSWORD = process.env.DB_PASSWORD;
+	private DB_USER = process.env.DB_USER;
+	private DEV_DB_URL = process.env.DEV_DB_URL;
+	private TEST_DB_URL = process.env.TEST_DB_URL;
+	private readonly devDbUrl =
+		`mongodb+srv://${this.DB_USER}:${this.DB_PASSWORD}@${this.DEV_DB_URL}`;
+	private readonly testDbUrl =
+		`mongodb+srv://${this.DB_USER}:${this.DB_PASSWORD}@${this.TEST_DB_URL}`;
 
 	public static getDatabaseInstance(): DatabaseConnection {
 		if (!DatabaseConnection.instance) {
@@ -22,7 +30,7 @@ class DatabaseConnection {
 			mongoose.connection.on("reconnected", () => console.log("reconnected"));
 			mongoose.connection.on("disconnecting", () => console.log("disconnecting"));
 			mongoose.connection.on("close", () => console.log("close"));
-			await mongoose.connect(process.env.DB_URL || "mongodb://localhost:27017/dev", {});
+			await mongoose.connect(this.devDbUrl);
 		} catch (err) {
 			console.log(err);
 		}
@@ -33,7 +41,7 @@ class DatabaseConnection {
 			return;
 		}
 		try {
-			await mongoose.connect(process.env.TEST_DB_URL || "mongodb://database:27017/test", {
+			await mongoose.connect(this.testDbUrl, {
 				serverSelectionTimeoutMS: 30000,
 				socketTimeoutMS: 30000,
 			});
