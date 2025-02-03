@@ -4,9 +4,11 @@ import request from "supertest";
 import app from "../../app";
 import { User } from "../../model";
 
+import { StripeClient } from "../../apis";
 import DatabaseConnection from "../../config/Database";
 
 const database = DatabaseConnection.getDatabaseInstance();
+let stripeCustomer = "";
 
 beforeAll(async () => {
 	await database.initTestDb();
@@ -15,6 +17,10 @@ beforeAll(async () => {
 afterAll(async () => {
 	await database.dropDatabase();
 	await database.close();
+	if (stripeCustomer.length > 0) {
+		const stripeClient = new StripeClient(process.env.STRIPE_SECRET_KEY || "");
+		await stripeClient.deleteCustomer(stripeCustomer);
+	}
 }, 30000);
 
 describe("User controller operations", () => {
@@ -51,6 +57,8 @@ describe("User controller operations", () => {
 			expect(response.body.data).toHaveProperty("firstName", "Sam");
 			expect(response.body.data).toHaveProperty("lastName", "testuser");
 			expect(response.body.data).toHaveProperty("email", "samsam@gmail.com");
+			expect(response.body.data).toHaveProperty("stripeCustomerId");
+			stripeCustomer = response.body.data.stripeCustomerId;
 		});
 	});
 

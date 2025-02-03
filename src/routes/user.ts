@@ -8,11 +8,11 @@ const { createUser, login, getUser, getAllUsers } = userController;
 const { validateUserSignup, validateUserLogin, validateGetUser } = UserRequestValidator;
 const { validateToken } = TokenService;
 
-const router: Router = Router();
+const useRoutes: Router = Router();
 
-router.post("/signup", validateUserSignup(CreateUserInput), createUser.bind(userController));
-router.get("", validateToken, getAllUsers.bind(userController));
-router.get("/:id", validateToken, validateGetUser(GetUserInput), getUser.bind(userController));
-router.post("/login", validateUserLogin(LoginInput), login.bind(userController));
+useRoutes.post("/signup", validateUserSignup(CreateUserInput), createUser.bind(userController));
+useRoutes.get("", validateToken, getAllUsers.bind(userController));
+useRoutes.get("/:id", validateToken, validateGetUser(GetUserInput), getUser.bind(userController));
+useRoutes.post("/login", validateUserLogin(LoginInput), login.bind(userController));
 
-export default router;
+export default useRoutes;
