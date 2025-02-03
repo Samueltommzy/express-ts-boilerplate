@@ -1,14 +1,15 @@
 import dotenv from "dotenv";
+dotenv.config();
+
 import app from "./app";
 import DatabaseConnection from "./config/Database";
 
-dotenv.config();
-const port: number = 3000;
-// async function initDb() {
-// 	const database = DatabaseConnection.getDatabaseInstance();
-// 	await database.init();
-// }
-// initDb();
+const port = process.env.PORT || 8080;
+async function initDb() {
+	const database = DatabaseConnection.getDatabaseInstance();
+	await database.init();
+}
+initDb();
 const server = app.listen(port, () => {
 	console.log(`Server is running on http://localhost:${port}`);
 });
