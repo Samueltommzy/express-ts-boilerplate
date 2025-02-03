@@ -31,9 +31,12 @@ jobs:
               run : sudo apt-get install -y docker-compose
             - name: Set environment variables
               run: |
-                echo "JWT_SECRET=testSecret" >> .env
-                echo "DB_URL=mongodb://database:27017/dev" >> .env
-                echo "TEST_DB_URL=mongodb://database:27017/test" >> .env
+                echo "JWT_SECRET=${{ secrets. JWT_SECRET }}" >> .env
+                echo "TEST_DB_URL=${{ secrets. TEST_DB_URL}}" >> .env
+                echo "DB_USER=${{ secrets. DB_USER }}" >> .env
+                echo "DB_PASSWORD=${{ secrets. DB_PASSWORD}}" >> .env
+                echo "STRIPE_API_URL=${{ secrets. STRIPE_API_URL }}" >> .env
+                echo "STRIPE_SECRET_KEY=${{ secrets. STRIPE_SECRET_KEY}}" >> .env
             - name: Build and start app
               run: docker-compose --env-file .env -f docker-compose.yml up -d --build
             - name: Wait for test database to be ready
