@@ -5,7 +5,7 @@
 	"main": "dist/index.js",
 	"scripts": {
 		"test": "jest --detectOpenHandles",
-		"start": "npm run build && node dist/index.js",
+		"start": "ts-node-dev --respawn --watch src src/index.ts",
 		"mongo-connect": "sh ./mongo-connect.sh",
 		"prepare": "husky",
 		"build": "tsc"
@@ -24,15 +24,17 @@
 		"lint-staged": "^15.3.0",
 		"supertest": "^7.0.0",
 		"ts-jest": "^29.2.5",
+		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.7.2"
 	},
 	"dependencies": {
 		"@types/jsonwebtoken": "^9.0.7",
+		"axios": "^1.7.9",
 		"bcrypt": "^5.1.1",
 		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
 		"jsonwebtoken": "^9.0.2",
-		"mongoose": "^8.9.3",
+		"mongoose": "^8.9.5",
 		"zod": "^3.24.1"
 	},
 	"lint-staged": {
