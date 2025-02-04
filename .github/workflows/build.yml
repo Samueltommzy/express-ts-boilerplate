@@ -30,13 +30,23 @@ jobs:
             - name: Setup docker compose
               run : sudo apt-get install -y docker-compose
             - name: Set environment variables
+              env:
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                JWT_SECRET: ${{ secrets.JWT_SECRET }}
+                TEST_DB_URL: ${{ secrets.TEST_DB_URL}}
+                DB_USER: ${{ secrets.DB_USER }}
+                DB_PASSWORD: ${{ secrets.DB_PASSWORD}}
+                STRIPE_API_URL: ${{ secrets.STRIPE_API_URL }}
+                STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY}}
               run: |
-                echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-                echo "TEST_DB_URL=${{ secrets.TEST_DB_URL}}" >> .env
-                echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-                echo "DB_PASSWORD=${{ secrets.DB_PASSWORD}}" >> .env
-                echo "STRIPE_API_URL=${{ secrets.STRIPE_API_URL }}" >> .env
-                echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY}}" >> .env
+                echo JWT_SECRET=$JWT_SECRET
+                echo GITHUB_TOKEN=$GITHUB_TOKEN
+                echo JWT_SECRET=$JWT_SECRET >> .env
+                echo TEST_DB_URL=$TEST_DB_URL >> .env
+                echo DB_USER=$DB_USER >> .env
+                echo DB_PASSWORD=$DB_PASSWORD >> .env
+                echo STRIPE_API_URL=$STRIPE_API_URL >> .env
+                echo STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY >> .env
             - name: Build and start app
               run: docker-compose --env-file .env -f docker-compose.yml up -d --build
             - name: Wait for test database to be ready
