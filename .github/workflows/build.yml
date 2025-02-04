@@ -18,7 +18,7 @@ jobs:
               run: biome ci .
     test:
         runs-on: ubuntu-latest
-    
+        environment: TEST
         steps:
             - name: checkout repository
               uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
                 STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY}}
               run: |
                 echo JWT_SECRET=$JWT_SECRET
-                echo GITHUB_TOKEN=$GITHUB_TOKEN
+                echo GITHUB_TOKEN=$GH_TOKEN
                 echo JWT_SECRET=$JWT_SECRET >> .env
                 echo TEST_DB_URL=$TEST_DB_URL >> .env
                 echo DB_USER=$DB_USER >> .env
