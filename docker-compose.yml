@@ -12,7 +12,6 @@ services:
         condition: service_healthy
     environment:
       - JWT_SECRET=${JWT_SECRET}
-      - DB_URL=${DB_URL}
       - TEST_DB_URL=${TEST_DB_URL}
     restart: always
   database:

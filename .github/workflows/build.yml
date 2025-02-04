@@ -39,8 +39,6 @@ jobs:
                 STRIPE_API_URL: ${{ secrets.STRIPE_API_URL }}
                 STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY}}
               run: |
-                echo JWT_SECRET=$JWT_SECRET
-                echo GITHUB_TOKEN=$GH_TOKEN
                 echo JWT_SECRET=$JWT_SECRET >> .env
                 echo TEST_DB_URL=$TEST_DB_URL >> .env
                 echo DB_USER=$DB_USER >> .env
