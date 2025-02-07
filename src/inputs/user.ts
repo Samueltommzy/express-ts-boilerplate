@@ -6,6 +6,12 @@ export const CreateUserInput = z.object({
 	password: z.string().min(8).max(255),
 });
 
+export const UpdateUserInput = z.object({
+	firstName: z.string().min(2).max(255).optional(),
+	lastName: z.string().min(2).max(255).optional(),
+	email: z.string().email().optional(),
+});
+
 export const LoginInput = z.object({
 	email: z.string().email(),
 	password: z.string().min(8).max(255),

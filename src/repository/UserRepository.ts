@@ -39,6 +39,26 @@ class UserRepository {
 			throw new Error((err as Error).message);
 		}
 	}
+
+	public async update(id: string, user: IUser) {
+		try {
+			const updatedUser = await User.updateOne(
+				{ _id: id },
+				{ ...user, updateAt: new Date() },
+			).exec();
+			return updatedUser;
+		} catch (err) {
+			throw new Error((err as Error).message);
+		}
+	}
+
+	public async delete(id: string) {
+		try {
+			await User.deleteOne({ _id: id }).exec();
+		} catch (err) {
+			throw new Error((err as Error).message);
+		}
+	}
 }
 
 export default UserRepository;

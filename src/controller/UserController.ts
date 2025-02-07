@@ -1,10 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import {
-	HttpException,
-	InvalidCredentialException,
-	ResourceNotFoundException,
-	UnAuthorizedException,
-} from "../exceptions";
+import { UnAuthorizedException } from "../exceptions";
 import type { IUser } from "../model";
 import { UserService } from "../service";
 import { ResponseHandler } from "../utils";
@@ -14,6 +9,8 @@ interface IUserController {
 	getUser: (req: Request, res: Response, next: NextFunction) => void;
 	getAllUsers: (req: Request, res: Response, next: NextFunction) => void;
 	login: (req: Request, res: Response, next: NextFunction) => void;
+	updateUser: (req: Request, res: Response, next: NextFunction) => void;
+	deleteUser: (req: Request, res: Response, next: NextFunction) => void;
 }
 class UserController implements IUserController {
 	private userService: UserService;
@@ -32,13 +29,7 @@ class UserController implements IUserController {
 
 	public async getUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			const user = (await this.userService.getUser(req.params.id)) as IUser;
-			if (user == null) {
-				throw new ResourceNotFoundException("User not found");
-			}
-			if (req.body._id != user._id) {
-				throw new UnAuthorizedException("You are not authorized to view this user");
-			}
+			const user = (await this.userService.getUser(req.params.id, req.body._id)) as IUser;
 			ResponseHandler.sendResponse(res, 200, "User fetched", user);
 		} catch (err) {
 			next(err);
@@ -49,6 +40,31 @@ class UserController implements IUserController {
 		try {
 			const users = (await this.userService.getAllUsers()) as IUser[];
 			ResponseHandler.sendResponse(res, 200, undefined, users);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	public async updateUser(req: Request, res: Response, next: NextFunction) {
+		try {
+			const userId = req.params.id;
+			const userData = req.body;
+			const decodedUserId = userData._id;
+			// if user
+
+			const user = await this.userService.updateUser(userId, decodedUserId, userData);
+			ResponseHandler.sendResponse(res, 200, undefined, user);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	public async deleteUser(req: Request, res: Response, next: NextFunction) {
+		try {
+			const userId = req.params.id;
+			const decodedUserId = req.body._id;
+			await this.userService.deleteUser(userId, decodedUserId);
+			ResponseHandler.sendResponse(res, 204);
 		} catch (err) {
 			next(err);
 		}

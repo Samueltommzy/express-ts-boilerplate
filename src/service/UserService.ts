@@ -1,7 +1,11 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { StripeClient } from "../apis";
-import { HttpException, InvalidCredentialException } from "../exceptions";
+import {
+	HttpException,
+	InvalidCredentialException,
+	ResourceNotFoundException,
+	UnAuthorizedException,
+} from "../exceptions";
 import type { Login } from "../inputs/user";
 import { TokenService } from "../middleware";
 import type { LoginResponse } from "../model/Login";
@@ -9,8 +13,10 @@ import type { IUser } from "../model/User";
 import { UserRepository } from "../repository";
 interface IUserService {
 	createUser: (user: IUser) => Promise<void>;
-	getUser: (userId: string) => Promise<IUser | undefined>;
+	getUser: (userId: string, decodedUserId: string) => Promise<IUser | undefined>;
 	getAllUsers: () => Promise<IUser[] | undefined>;
+	updateUser: (userId: string, decodedUserId: string, user: IUser) => Promise<IUser>;
+	deleteUser: (userId: string, decodedUserId: string) => Promise<void>;
 	login: (input: Login) => Promise<LoginResponse>;
 }
 
@@ -36,11 +42,20 @@ class UserService implements IUserService {
 		}
 	}
 
-	public async getUser(userId: string): Promise<IUser | undefined> {
+	public async getUser(userId: string, decodedUserId: string): Promise<IUser | undefined> {
 		try {
 			const user = (await this.userRepository.findById(userId)) as IUser;
+			if (user == null) {
+				throw new ResourceNotFoundException("User not found");
+			}
+			if (user.id != decodedUserId) {
+				throw new UnAuthorizedException("You are not authorized to view this user");
+			}
 			return user;
 		} catch (err) {
+			if (err instanceof HttpException) {
+				throw err;
+			}
 			throw new Error((err as Error).message);
 		}
 	}
@@ -50,10 +65,43 @@ class UserService implements IUserService {
 			const users = (await this.userRepository.findAll()) as IUser[];
 			return users;
 		} catch (err) {
+			if (err instanceof HttpException) {
+				throw err;
+			}
 			throw new Error((err as Error).message);
 		}
 	}
 
+	public async updateUser(userId: string, decodedUserId: string, user: IUser): Promise<IUser> {
+		try {
+			await this.getUser(userId, decodedUserId);
+			// if(!userData){
+			// 	throw new ResourceNotFoundException("User not found");
+			// }
+			await this.userRepository.update(userId, user);
+			return (await this.userRepository.findById(userId)) as IUser;
+		} catch (err) {
+			if (err instanceof HttpException) {
+				throw err;
+			}
+			throw new Error((err as Error).message);
+		}
+	}
+
+	public async deleteUser(userId: string, decodedUserId: string) {
+		try {
+			await this.getUser(userId, decodedUserId);
+			// if(!userData){
+			// 	throw new ResourceNotFoundException("User not found");
+			// }
+			await this.userRepository.delete(userId);
+		} catch (err) {
+			if (err instanceof HttpException) {
+				throw err;
+			}
+			throw new Error((err as Error).message);
+		}
+	}
 	public async login(input: Login): Promise<LoginResponse> {
 		try {
 			const user = await this.userRepository.findByEmail(input.email);
@@ -68,7 +116,7 @@ class UserService implements IUserService {
 			const balance = await this.stripeClient.getBalance();
 			return { token, balance };
 		} catch (err) {
-			if (err instanceof InvalidCredentialException) {
+			if (err instanceof HttpException) {
 				throw err;
 			}
 			throw new Error((err as Error).message);

@@ -1,18 +1,31 @@
 import { Router } from "express";
 import { UserController } from "../controller";
-import { CreateUserInput, GetUserInput, LoginInput } from "../inputs/user";
+import { CreateUserInput, GetUserInput, LoginInput, UpdateUserInput } from "../inputs/user";
 import { TokenService, UserRequestValidator } from "../middleware";
 
 const userController = new UserController();
-const { createUser, login, getUser, getAllUsers } = userController;
-const { validateUserSignup, validateUserLogin, validateGetUser } = UserRequestValidator;
+const { createUser, login, getUser, getAllUsers, updateUser, deleteUser } = userController;
+const { validateUserSignup, validateUserLogin, validateGetUser, validateUserUpdate } =
+	UserRequestValidator;
 const { validateToken } = TokenService;
 
-const useRoutes: Router = Router();
+const userRoutes: Router = Router();
 
-useRoutes.post("/signup", validateUserSignup(CreateUserInput), createUser.bind(userController));
-useRoutes.get("", validateToken, getAllUsers.bind(userController));
-useRoutes.get("/:id", validateToken, validateGetUser(GetUserInput), getUser.bind(userController));
-useRoutes.post("/login", validateUserLogin(LoginInput), login.bind(userController));
+userRoutes.post("/signup", validateUserSignup(CreateUserInput), createUser.bind(userController));
+userRoutes.get("", validateToken, getAllUsers.bind(userController));
+userRoutes.get("/:id", validateToken, validateGetUser(GetUserInput), getUser.bind(userController));
+userRoutes.put(
+	"/:id",
+	validateToken,
+	validateUserUpdate(UpdateUserInput, GetUserInput),
+	updateUser.bind(userController),
+);
+userRoutes.delete(
+	"/:id",
+	validateToken,
+	validateGetUser(GetUserInput),
+	deleteUser.bind(userController),
+);
+userRoutes.post("/login", validateUserLogin(LoginInput), login.bind(userController));
 
-export default useRoutes;
+export default userRoutes;

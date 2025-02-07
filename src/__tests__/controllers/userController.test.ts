@@ -10,12 +10,25 @@ import DatabaseConnection from "../../config/Database";
 const database = DatabaseConnection.getDatabaseInstance();
 let stripeCustomer = "";
 
+async function createDummyUser() {
+	const userData = {
+		_id: new moongoose.Types.ObjectId("6778627d2724c156d2a2a9e8"),
+		firstName: "dum",
+		lastName: "dum",
+		password: "testpassword",
+		email: "dummy@gmail.com",
+	};
+	const dummy = new User(userData);
+	await dummy.save();
+}
+
 beforeAll(async () => {
 	await database.initTestDb();
+	await createDummyUser();
 }, 30000);
 
 afterAll(async () => {
-	await database.dropDatabase();
+	await database.dropAllCollections();
 	await database.close();
 	if (stripeCustomer.length > 0) {
 		const stripeClient = new StripeClient(process.env.STRIPE_SECRET_KEY || "");
@@ -42,12 +55,12 @@ describe("User controller operations", () => {
 			const response = await request(app).post("/user/signup").send(userData);
 			expect(response.status).toBe(201);
 			const documentCount = await User.countDocuments({}).exec();
-			expect(documentCount).toBe(1);
+			expect(documentCount).toBe(2);
 		});
 	});
 
 	describe("GET /user/:id", () => {
-		test("should get a user by id using /user/:id endpoint provided a valid token is provided in request header", async () => {
+		test("should get a user by id using /user/:id endpoint given a valid token is provided in request header", async () => {
 			// Test implementation for getting a user
 			const response = await request(app)
 				.get("/user/6778627d2724c156d2a2a9e7")
@@ -100,7 +113,7 @@ describe("User controller operations", () => {
 			expect(response.status).toBe(200);
 			expect(response.body).toHaveProperty("data");
 			expect(response.body.data).toBeInstanceOf(Array);
-			expect(response.body.data).toHaveLength(1);
+			expect(response.body.data).toHaveLength(2);
 		});
 	});
 
@@ -110,6 +123,36 @@ describe("User controller operations", () => {
 			const response = await request(app).get("/user/");
 			expect(response.status).toBe(401);
 			expect(response.body).toHaveProperty("message", "Token is missing in request header");
+		});
+	});
+
+	describe("PUT /user/:id", () => {
+		test("should return a 404 error if the user is not found", async () => {
+			// Test implementation for getting a user
+			const data = {
+				firstName: "SamUpdated",
+			};
+			const response = await request(app)
+				.put("/user/6778627d2724c156d2a2a9e9")
+				.set("Authorization", `Bearer ${token}`);
+			expect(response.status).toBe(404);
+			expect(response.body).toHaveProperty("message", "User not found");
+		});
+	});
+
+	describe("PUT /user/:id", () => {
+		test("should update the record of a user", async () => {
+			// Test implementation for getting a user
+			const data = {
+				firstName: "SamUpdated",
+			};
+			const response = await request(app)
+				.put("/user/6778627d2724c156d2a2a9e7")
+				.send(data)
+				.set("Authorization", `Bearer ${token}`);
+			expect(response.status).toBe(200);
+			expect(response.body).toHaveProperty("data");
+			expect(response.body.data).toHaveProperty("firstName", data.firstName);
 		});
 	});
 
@@ -124,6 +167,16 @@ describe("User controller operations", () => {
 			expect(response.body).toHaveProperty("message", "User logged in successfully");
 			expect(response.body).toHaveProperty("data");
 			expect(response.body.data).toHaveProperty("token");
+		});
+	});
+
+	describe("DELETE /user/:id", () => {
+		test("should delete the record of a user", async () => {
+			// Test implementation for deleting a user
+			const response = await request(app)
+				.delete("/user/6778627d2724c156d2a2a9e7")
+				.set("Authorization", `Bearer ${token}`);
+			expect(response.status).toBe(204);
 		});
 	});
 });
