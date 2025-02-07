@@ -1,7 +1,12 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
 import type { Balance } from "./types";
 
-class StripeClient {
+export interface IStripeClientAPI {
+	getBalance: () => Promise<Balance>;
+	createCustomer: (name: string, email: string) => Promise<string | undefined>;
+	deleteCustomer: (customerId: string) => Promise<string>;
+}
+class StripeClient implements IStripeClientAPI {
 	private readonly base_url: string;
 	private secret: string;
 	private axiosInstance: AxiosInstance;
@@ -45,9 +50,10 @@ class StripeClient {
 		}
 	}
 
-	public async deleteCustomer(customerId: string): Promise<void> {
+	public async deleteCustomer(customerId: string): Promise<string> {
 		try {
 			await this.axiosInstance.delete(`${this.base_url}/customers/${customerId}`);
+			return "success";
 		} catch (error) {
 			throw error;
 		}

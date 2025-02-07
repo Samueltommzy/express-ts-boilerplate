@@ -179,6 +179,7 @@ describe("User controller operations", () => {
 				.delete("/user/6778627d2724c156d2a2a9e7")
 				.set("Authorization", `Bearer ${token}`);
 			expect(response.status).toBe(204);
+			stripeCustomer = "";
 		});
 	});
 });

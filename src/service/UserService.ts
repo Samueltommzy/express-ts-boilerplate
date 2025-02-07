@@ -91,10 +91,13 @@ class UserService implements IUserService {
 
 	public async deleteUser(userId: string, decodedUserId: string) {
 		try {
-			await this.getUser(userId, decodedUserId);
+			const user = await this.getUser(userId, decodedUserId);
 			// if(!userData){
 			// 	throw new ResourceNotFoundException("User not found");
 			// }
+			if (user?.stripeCustomerId) {
+				await this.stripeClient.deleteCustomer(user.stripeCustomerId);
+			}
 			await this.userRepository.delete(userId);
 		} catch (err) {
 			if (err instanceof HttpException) {
