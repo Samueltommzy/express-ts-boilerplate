@@ -30,7 +30,7 @@ class DatabaseConnection {
 			mongoose.connection.on("reconnected", () => console.log("reconnected"));
 			mongoose.connection.on("disconnecting", () => console.log("disconnecting"));
 			mongoose.connection.on("close", () => console.log("close"));
-			await mongoose.connect(this.devDbUrl);
+			await mongoose.connect(this.devDbUrl, { dbName: "dev" });
 		} catch (err) {
 			console.log(err);
 		}
@@ -44,6 +44,7 @@ class DatabaseConnection {
 			await mongoose.connect(this.testDbUrl, {
 				serverSelectionTimeoutMS: 30000,
 				socketTimeoutMS: 30000,
+				dbName: "test",
 			});
 			this.isConnected = true;
 		} catch (err: any) {
@@ -51,15 +52,17 @@ class DatabaseConnection {
 		}
 	}
 
-	public async dropDatabase() {
+	public async dropAllCollections() {
 		try {
-			if (this.isConnected) {
-				await mongoose.connection.dropDatabase();
+			const collections = await mongoose.connection.db?.collections();
+			if (collections?.length) {
+				for (const collection of collections) {
+					await collection.drop();
+				}
 			}
-		} catch (err) {
-			// console.log(err);
-		}
+		} catch (err) {}
 	}
+
 	public async close() {
 		if (this.isConnected) {
 			await mongoose.disconnect();
