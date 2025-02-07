@@ -54,8 +54,11 @@ describe("User controller operations", () => {
 			};
 			const response = await request(app).post("/user/signup").send(userData);
 			expect(response.status).toBe(201);
+			expect(response.body).toHaveProperty("data");
+			expect(response.body.data).toHaveProperty("stripeId");
 			const documentCount = await User.countDocuments({}).exec();
 			expect(documentCount).toBe(2);
+			stripeCustomer = response.body.data.stripeId;
 		});
 	});
 
@@ -71,7 +74,6 @@ describe("User controller operations", () => {
 			expect(response.body.data).toHaveProperty("lastName", "testuser");
 			expect(response.body.data).toHaveProperty("email", "samsam@gmail.com");
 			expect(response.body.data).toHaveProperty("stripeCustomerId");
-			stripeCustomer = response.body.data.stripeCustomerId;
 		});
 	});
 

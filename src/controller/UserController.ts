@@ -19,9 +19,9 @@ class UserController implements IUserController {
 	}
 	public async createUser(req: Request, res: Response, next: NextFunction) {
 		try {
-			await this.userService.createUser(req.body);
+			const stripeId = await this.userService.createUser(req.body);
 			// send notification email - publish to message broker
-			ResponseHandler.sendResponse(res, 201, "User signed up successfully");
+			ResponseHandler.sendResponse(res, 201, "User signed up successfully", { stripeId });
 		} catch (err) {
 			next(err);
 		}

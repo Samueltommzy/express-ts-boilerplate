@@ -12,7 +12,7 @@ import type { LoginResponse } from "../model/Login";
 import type { IUser } from "../model/User";
 import { UserRepository } from "../repository";
 interface IUserService {
-	createUser: (user: IUser) => Promise<void>;
+	createUser: (user: IUser) => Promise<string | null>;
 	getUser: (userId: string, decodedUserId: string) => Promise<IUser | undefined>;
 	getAllUsers: () => Promise<IUser[] | undefined>;
 	updateUser: (userId: string, decodedUserId: string, user: IUser) => Promise<IUser>;
@@ -27,16 +27,17 @@ class UserService implements IUserService {
 		this.userRepository = new UserRepository();
 		this.stripeClient = new StripeClient(process.env.STRIPE_SECRET_KEY || "");
 	}
-	public async createUser(user: IUser) {
+	public async createUser(user: IUser): Promise<string | null> {
 		try {
 			//hash user password
-			const name = `${user.firstName} + " " + ${user.lastName}`;
+			const name = `${user.firstName}  ${user.lastName}`;
 			const email = user.email;
 			const stripeId = await this.stripeClient.createCustomer(name, email);
 			if (stripeId) {
 				user.stripeCustomerId = stripeId;
 				await this.userRepository.create(user);
 			}
+			return stripeId ?? null;
 		} catch (err) {
 			throw new Error((err as Error).message);
 		}
