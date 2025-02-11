@@ -50,7 +50,7 @@ class UserService implements IUserService {
 					value: { username: name, email },
 				},
 			};
-			await this.kafkaProducer.produce(producerMessage);
+			this.kafkaProducer.produce(producerMessage);
 
 			return stripeId ?? null;
 		} catch (err) {

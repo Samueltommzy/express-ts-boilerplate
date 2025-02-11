@@ -1,7 +1,7 @@
 name: Build Project
 on:
     push:
-        branches: ["stripe-api-integration", "dev", "master"]
+        branches: ["kafka-integration", "dev", "master"]
     pull_request:
         branches: ["master"]
 jobs:
@@ -38,6 +38,8 @@ jobs:
                 DB_PASSWORD: ${{ secrets.DB_PASSWORD}}
                 STRIPE_API_URL: ${{ secrets.STRIPE_API_URL }}
                 STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY}}
+                KAFKA_BROKERS: ${{ secrets.KAFKA_BROKERS }}
+                KAFKA_CLIENT: ${{ secrets.KAFKA_CLIENT }}
               run: |
                 echo JWT_SECRET=$JWT_SECRET >> .env
                 echo TEST_DB_URL=$TEST_DB_URL >> .env
@@ -45,6 +47,8 @@ jobs:
                 echo DB_PASSWORD=$DB_PASSWORD >> .env
                 echo STRIPE_API_URL=$STRIPE_API_URL >> .env
                 echo STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY >> .env
+                echo KAFKA_BROKERS=$KAFKA_BROKERS >> .env
+                echo KAFKA_CLIENT=$KAFKA_CLIENT >> .env
             - name: Build and start app
               run: docker-compose --env-file .env -f docker-compose.yml up -d --build
             - name: Wait for test database to be ready

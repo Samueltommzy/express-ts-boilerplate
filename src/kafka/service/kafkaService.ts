@@ -9,6 +9,7 @@ class KafkaService {
 	private isInitialized: boolean;
 	private admin: Admin;
 	private producer: Producer;
+	private retryCount: number;
 
 	private constructor() {
 		this.isConnected = false;
@@ -20,6 +21,7 @@ class KafkaService {
 		});
 		this.admin = this.kafka.admin();
 		this.producer = this.kafka.producer();
+		this.retryCount = 0;
 	}
 
 	public static getInstance() {
@@ -42,7 +44,12 @@ class KafkaService {
 			this.isConnected = true;
 			await this.createTopics(kafkaTopicsConfiguration);
 		} catch (error) {
-			console.error(`Unable to connect to kafka: ${error}`);
+			this.retryCount++;
+			if (this.retryCount == kafkaConfig.retry.retries) {
+				console.log(`Failed to connect to kafka: ${error}`);
+				return;
+			}
+			console.error(`Unable to connect to kafka: Retrying ${this.retryCount} .... `);
 			setTimeout(() => this.connect(), 5000);
 		}
 	}
