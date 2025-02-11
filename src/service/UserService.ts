@@ -91,9 +91,7 @@ class UserService implements IUserService {
 	public async updateUser(userId: string, decodedUserId: string, user: IUser): Promise<IUser> {
 		try {
 			await this.getUser(userId, decodedUserId);
-			// if(!userData){
-			// 	throw new ResourceNotFoundException("User not found");
-			// }
+
 			await this.userRepository.update(userId, user);
 			return (await this.userRepository.findById(userId)) as IUser;
 		} catch (err) {
