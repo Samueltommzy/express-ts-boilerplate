@@ -23,12 +23,12 @@ const topicCreateConfig: TopicCreationConfigType = {
 };
 
 const consumerConfig: ConsumerConfigType = {
-	maxConnectionCount: 5,
+	maxRetryCount: 5,
 };
 
 const consumerGroups = {
-	user_group_a: "user-group-a",
-	user_group_b: "user-group-b",
+	new_user_group_a: "new-user-group-a",
+	new_user_group_b: "new-user-group-b",
 };
 
 const kafkaTopics: KafkaTopicType = (() => {

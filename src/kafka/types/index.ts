@@ -29,12 +29,12 @@ type TopicConfig = {
 };
 
 interface IKafkaConsumer {
-	processMessage(topic: string, message: ProcessMessage): any;
+	processMessage: (topic: string, message: ProcessMessage) => Promise<any>;
 	getConsumerClassName(): string;
 }
 
 type ConsumerConfigType = {
-	maxConnectionCount: number;
+	maxRetryCount: number;
 };
 
 type KafkaMessage = {

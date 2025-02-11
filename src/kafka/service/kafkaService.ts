@@ -80,7 +80,8 @@ class KafkaService {
 			const { topics } = await this.admin.fetchTopicMetadata({
 				topics: [topicName],
 			});
-			const topicMeta = topics.find((topic) => topic.name == topicName);
+			console.log({ topics });
+			const topicMeta = topics?.find((topic) => topic.name == topicName);
 			return !!topicMeta;
 		} catch (error) {
 			console.error(` Checking for topic existence failed: ${error}`);
