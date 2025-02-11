@@ -100,6 +100,7 @@ class KafkaService {
 				topic,
 				messages: [{ key: JSON.stringify(message.key), value: JSON.stringify(message.value) }],
 			});
+			console.log("message produced", JSON.stringify(message.value));
 		} catch (error) {
 			this.isConnected = false;
 			this.connect();

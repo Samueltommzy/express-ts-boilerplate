@@ -3,6 +3,7 @@ dotenv.config();
 
 import app from "./app";
 import DatabaseConnection from "./config/Database";
+import { consumerRunner } from "./kafka/consumers/runner";
 import { Producer } from "./kafka/producer";
 
 const port = process.env.PORT || 8080;
@@ -19,12 +20,21 @@ const server = app.listen(port, () => {
 	}
 });
 
-const kafkaProducer = new Producer();
-kafkaProducer
-	.start()
-	.then(() => console.log("Kafka producer started successfully"))
-	.catch((error) => console.error(`Unable to start kafka producer: ${error}`));
-
+(async () => {
+	try {
+		const kafkaProducer = new Producer();
+		await kafkaProducer.start();
+		console.log("Kafka producer started successfully");
+	} catch (error) {
+		console.error(`Unable to start kafka producer: ${error}`);
+	}
+	try {
+		await consumerRunner();
+		console.log("Consumers successfully initialized");
+	} catch (error) {
+		console.error(`Error initializing consumers: ${error}`);
+	}
+})();
 const closeServer = async () => {
 	server.close(() => {
 		console.log("Server closed");

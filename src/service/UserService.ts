@@ -7,6 +7,9 @@ import {
 	UnAuthorizedException,
 } from "../exceptions";
 import type { Login } from "../inputs/user";
+import { kafkaTopics } from "../kafka/config";
+import { Producer } from "../kafka/producer";
+import type { KafkaProducerMessage } from "../kafka/types";
 import { TokenService } from "../middleware";
 import type { LoginResponse } from "../model/Login";
 import type { IUser } from "../model/User";
@@ -23,8 +26,10 @@ interface IUserService {
 class UserService implements IUserService {
 	private userRepository: UserRepository;
 	private stripeClient: StripeClient;
+	private kafkaProducer: Producer;
 	constructor() {
 		this.userRepository = new UserRepository();
+		this.kafkaProducer = new Producer();
 		this.stripeClient = new StripeClient(process.env.STRIPE_SECRET_KEY || "");
 	}
 	public async createUser(user: IUser): Promise<string | null> {
@@ -37,6 +42,16 @@ class UserService implements IUserService {
 				user.stripeCustomerId = stripeId;
 				await this.userRepository.create(user);
 			}
+
+			const producerMessage: KafkaProducerMessage = {
+				topic: kafkaTopics.USER_CREATE,
+				message: {
+					key: "user_create",
+					value: { username: name, email },
+				},
+			};
+			await this.kafkaProducer.produce(producerMessage);
+
 			return stripeId ?? null;
 		} catch (err) {
 			throw new Error((err as Error).message);

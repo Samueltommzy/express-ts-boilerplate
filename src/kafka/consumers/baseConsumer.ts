@@ -35,7 +35,6 @@ class BaseConsumer implements IKafkaConsumer {
 				eachMessage: async ({ topic, partition, message }) => {
 					console.log("message received", {
 						topic,
-						message,
 						partition,
 					});
 					const messageValue = message?.value?.toString();
@@ -51,7 +50,7 @@ class BaseConsumer implements IKafkaConsumer {
 			}
 
 			console.log(`Failed to connect to kafka consumer ,Retrying ${this.retryCount} ....`);
-			setTimeout(() => this.connect, 5000);
+			setTimeout(() => this.connect(), 5000);
 		}
 	}
 	async processMessage(topic: string, message: ProcessMessage) {
