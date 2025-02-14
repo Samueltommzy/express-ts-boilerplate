@@ -2,7 +2,12 @@ import jwt from "jsonwebtoken";
 import moongoose from "mongoose";
 import request from "supertest";
 import app from "../../app";
+import { Producer } from "../../kafka/producer";
 import { User } from "../../model";
+
+jest.mock("../../kafka/producer");
+
+const mockedKafkaProducer = Producer as jest.MockedClass<typeof Producer>;
 
 import { StripeClient } from "../../apis";
 import DatabaseConnection from "../../config/Database";
@@ -23,6 +28,7 @@ async function createDummyUser() {
 }
 
 beforeAll(async () => {
+	mockedKafkaProducer.prototype.produce.mockResolvedValue(undefined);
 	await database.initTestDb();
 	await createDummyUser();
 }, 30000);
@@ -58,6 +64,7 @@ describe("User controller operations", () => {
 			expect(response.body.data).toHaveProperty("stripeId");
 			const documentCount = await User.countDocuments({}).exec();
 			expect(documentCount).toBe(2);
+			expect(mockedKafkaProducer.prototype.produce).toHaveBeenCalledTimes(1);
 			stripeCustomer = response.body.data.stripeId;
 		});
 	});
